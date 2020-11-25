@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>NIC: Neural Image Coding</title>
+    <style>
+        h1 {
+            font-size: 68pt;
+        }
+        .note {
+            padding-top: 20pt;
+            font-size: 18pt;
+            /*padding-bottom: 20pt;*/
+        }
+        h2 {
+            padding-top: 20pt;
+            align-content: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>NIC: Neural Image Coding</h1>
+    <p class="note">Open-source machine learning powered image codec.</p>
+    <a href="" class="btn-outline-info">View on GitHub</a>
+    <h2>Introduction</h2>
+    NIC aims at exploring the deep neural network based end-to-end solution for learned image compression.
+    It is an on-going work. Current version (NIC-0.1) follow the design of Non-Local Attention optimization and
+    Improved Context modeling-based image compression (NLAIC) [1] with modified Context Model as well as mixed
+    Gaussian probability prediction [2].
+    <h2>Installation</h2>
+    <p>You don't need to manually compile any part of the code. You will need a PyTorch (>=1.3) environment to run the code.<br>
+    Follow the installation instructions on <a href="https://pytorch.org/get-started/locally/">pytorch.org</a> to install the library.</p>
+
+    <h2>Usage</h2>
+    <h4>Encode</h4>
+    <p>Encode an image with filename INPUT_IMAGE to bit-stream named CODED_BIN with the following command.<br>
+        You need to specify the model index in the command line to run different models.</p>
+    <code>$ python inference.py –-encode –i INPUT_IMAGE -o CODED_BIN -m MODEL_INDEX </code>
+    <p></p>
+    <h4>Decode</h4>
+    <p>Decode from a binary bit-stream CODED_BIN to reconstruct an image named REC_IMAGE with the following command.</p>
+    <code>$ python inference.py –-decode -i CODEC_BIN -o REC_IMAGE</code>
+    <p></p>
+
+    <h2>Performance</h2>
+
+    <table class="table text-center table-bordered">
+
+        <h4 class="text-center">Different Methods vs. BPG (Average BD-rate Reduction)</h4>
+        <thead class="thead-light">
+        <tr>
+            <th scope="col"></th>
+            <th scope="col"></th>
+
+            <th scope="col" colspan="4">High Bitrate</th>
+            <th scope="col" colspan="4">Low Bitrate</th>
+
+        </tr>
+        </thead>
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Methods</th>
+            <th scope="col">Classes</th>
+
+            <th scope="col">RGB PSNR</th>
+            <th scope="col">RGB MS-SSIM</th>
+            <th scope="col">YUV PSNR</th>
+            <th scope="col">Y MS-SSIM</th>
+
+            <th scope="col">RGB PSNR</th>
+            <th scope="col">RGB MS-SSIM</th>
+            <th scope="col">YUV PSNR</th>
+            <th scope="col">Y MS-SSIM</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row" rowspan="5">VVC</th>
+            <td>ClassA_6K</td> <td>-15.1%</td> <td>-16.0%</td> <td>-15.9%</td> <td>-13.1%</td> <td>-23.6%</td> <td>-23.1%</td> <td>-25.1%</td> <td>-19.0%</td>
+        </tr>
+        <tr>
+            <td>ClassB_4K</td> <td>-15.3%</td> <td>-17.2%</td> <td>-15.9%</td> <td>-13.6%</td> <td>-23.7%</td> <td>-24.7%</td> <td>-25.3%</td> <td>-18.8%</td>
+        </tr>
+        <tr>
+            <td>ClassC_2K</td> <td>-22.4%</td> <td>-24.1%</td> <td>-22.6%</td> <td>-18.9%</td> <td>-28.8%</td> <td>-28.2%</td> <td>-29.6%</td> <td>-22.8%</td>
+        </tr>
+        <tr>
+            <td>ClassD_Kodak</td> <td>-19.0%</td> <td>-18.3%</td> <td>-20.4%</td> <td>-14.6%</td> <td>-23.5%</td> <td>-20.7%</td> <td>-27.0%</td> <td>-16.0%</td>
+        </tr>
+        <tr>
+            <td>overall</td> <td>-17.9%</td> <td>-18.9%</td> <td>-18.7%</td> <td>-15.1%</td> <td>-24.9%</td> <td>-24.2%</td> <td>-26.8%</td> <td>-19.1%</td>
+        </tr>
+
+        <tr class="table-secondary">
+            <th scope="row" rowspan="5">NIC-0.1 (MSE)</th>
+            <td>ClassA_6K</td> <td>-18.7%</td> <td>-26.0%</td> <td>-16.0%</td> <td>-16.9%</td> <td>-19.6%</td> <td>-26.7%</td> <td>-17.2%</td> <td>-18.7%</td>
+        </tr>
+
+        <tr class="table-secondary">
+            <td>ClassB_4K</td> <td>-17.3%</td> <td>-26.4%</td> <td>-14.5%</td> <td>-17.7%</td> <td>-18.9%</td> <td>-28.8%</td> <td>-18.7%</td> <td>-19.2%</td>
+        </tr>
+
+        <tr class="table-secondary">
+            <td>ClassC_2K</td> <td>-19.2%</td> <td>-31.2%</td> <td>-12.5%</td> <td>-21.0%</td> <td>-20.5%</td> <td>-32.2%</td> <td>-16.3%</td> <td>-23.2%</td>
+        </tr>
+
+        <tr class="table-secondary">
+            <td>ClassD_Kodak</td> <td>-4.2%</td> <td>-21.5%</td> <td>-2.6%</td> <td>-14.0%</td> <td>-7.3%</td> <td>-27.7%</td> <td>-9.8%</td> <td>-21.8%</td>
+        </tr>
+
+        <tr class="table-secondary">
+            <td>overall</td> <td>-14.9%</td> <td>-26.3%</td> <td>-11.4%</td> <td>-17.4%</td> <td>-16.6%</td> <td>-28.9%</td> <td>-15.5%</td> <td>-20.7%</td>
+        </tr>
+
+        <tr class="table-info">
+            <th scope="row" rowspan="5">NIC-0.1<br>(MS-SSIM)</th>
+            <td>ClassA_6K</td> <td>32.4%</td> <td>-53.7%</td> <td>33.1%</td> <td>-46.9%</td> <td>27.9%</td> <td>-50.1%</td> <td>33.5%</td> <td>-45.6%</td>
+        </tr>
+        <tr class="table-info">
+            <td>ClassB_4K</td> <td>37.1%</td> <td>-54.2%</td> <td>37.3%</td> <td>-47.6%</td> <td>37.2%</td> <td>-51.4%</td> <td>40.8%</td> <td>-45.3%</td>
+        </tr>
+        <tr class="table-info">
+            <td>ClassC_2K</td> <td>38.2%</td> <td>-58.3%</td> <td>52.7%</td> <td>-48.7%</td> <td>25.5%</td> <td>-55.2%</td> <td>31.7%</td> <td>-46.8%</td>
+        </tr>
+        <tr class="table-info">
+            <td>ClassD_Kodak</td> <td>80.6%</td> <td>-52.4%</td> <td>68.3%</td> <td>-44.4%</td> <td>69.0%</td> <td>-50.1%</td> <td>52.0%</td> <td>-45.9%</td>
+        </tr>
+        <tr class="table-info">
+            <td>overall</td> <td>47.1%</td> <td>-54.7%</td> <td>47.8%</td> <td>-46.9%</td> <td>39.9%</td> <td>-51.7%</td> <td>39.5%</td> <td>-45.9%</td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <h2>Contributors & Contact</h2>
+    <p>The contributors of this project are listed as follows.<br>
+        CHEN. Tong, Nanjing University, tong@smail.nju.edu.cn<br>
+        JIA. Chuanmin, Peking University, cmjia@pku.edu.cn<br>
+        LIN. Jianping, University of Science and Technology of China, ljp105@mail.ustc.edu.cn<br>
+        LIU. Feiyang, Wuhan University, liufeiyang@whu.edu.cn<br>
+        LIU. Haojie, Nanjing University, haojie@smail.nju.edu.cn<br>
+        MA. Haichuan, University of Science and Technology of China, hcma@mail.ustc.edu.cn<br>
+        WANG. Yefei, University of Science and Technology of China, wyfei@mail.ustc.edu.cn
+    </p>
+    <p>Website maintainer<br>HU. Yueyu, Peking University, huyy@pku.edu.cn</p>
+
+    <h2>References</h2>
+    <p>
+        [1]	Neural Image Compression via Non-Local Attention Optimization and Improved Context Modeling, Tong Chen, Haojie Liu, Zhan Ma, Qiu Shen, Xun Cao, Yao Wang, arXiv preprint arXiv:1910.06244
+    </p>
+    <p>
+        [2]	An End-to-End Joint Learning Scheme of Image Compression and Quality Enhancement with Improved Entropy Minimization, Jooyoung Lee, Seunghyun Cho, Munchurl Kim, arXiv preprint arXiv:1912.12817
+    </p>
+
+</div>
+<script src="js/jquery-3.5.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+</body>
+</html>
